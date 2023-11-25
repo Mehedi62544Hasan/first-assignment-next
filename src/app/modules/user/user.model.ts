@@ -1,7 +1,15 @@
 import { Schema, model } from 'mongoose';
-import { Order, User, UserAddress, UserName } from './user.interface';
+import {
+  TOrder,
+  TUser,
+  TUserAddress,
+  UserModel,
+  TUserName,
+} from './user.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
-const useNameSchema = new Schema<UserName>({
+const useNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
     trim: true,
@@ -14,7 +22,7 @@ const useNameSchema = new Schema<UserName>({
   },
 });
 
-const useAddressSchema = new Schema<UserAddress>({
+const useAddressSchema = new Schema<TUserAddress>({
   street: {
     type: String,
     trim: true,
@@ -32,7 +40,7 @@ const useAddressSchema = new Schema<UserAddress>({
   },
 });
 
-const OrderSchema = new Schema<Order>({
+const OrderSchema = new Schema<TOrder>({
   product: {
     type: String,
     trim: true,
@@ -50,7 +58,7 @@ const OrderSchema = new Schema<Order>({
   },
 });
 
-const useUserSchema = new Schema<User>({
+const useUserSchema = new Schema<TUser, UserModel>({
   userId: {
     type: Number,
     trim: true,
@@ -72,12 +80,10 @@ const useUserSchema = new Schema<User>({
   age: {
     type: Number,
     trim: true,
-    required: true,
   },
   email: {
     type: String,
     trim: true,
-    required: true,
   },
   isActive: {
     type: Boolean,
@@ -92,4 +98,26 @@ const useUserSchema = new Schema<User>({
   orders: [OrderSchema],
 });
 
-export const UserModel = model<User>('User', useUserSchema);
+useUserSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await User.findOne({ userId: id });
+  return existingUser;
+};
+
+useUserSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.password_salt),
+  );
+  // do stuff
+  next();
+});
+useUserSchema.post('save', async function (doc, next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  doc.password = '';
+  // do stuff
+  next();
+});
+
+export const User = model<TUser, UserModel>('User', useUserSchema);

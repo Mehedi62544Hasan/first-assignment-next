@@ -1,28 +1,35 @@
-export type UserName = {
+import { Model } from 'mongoose';
+
+export type TUserName = {
   firstName: string;
   lastName: string;
 };
 
-export type UserAddress = {
+export type TUserAddress = {
   street: string;
   city: string;
   country: string;
 };
-export type Order = {
+export type TOrder = {
   product: string;
   price: number;
   quantity: number;
 };
 
-export type User = {
+export type TUser = {
   userId: number;
   username: string;
   password: string;
-  fullName: UserName;
+  fullName: TUserName;
   age: number;
   email: string;
   isActive: boolean;
   hobbies: string[];
-  address: UserAddress;
-  orders?: Order[];
+  address: TUserAddress;
+  orders?: TOrder[];
 };
+
+export interface UserModel extends Model<TUser> {
+  // eslint-disable-next-line no-unused-vars
+  isUserExists(userId: number): Promise<TUser | null>;
+}

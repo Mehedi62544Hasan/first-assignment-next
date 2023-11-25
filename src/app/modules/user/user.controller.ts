@@ -16,7 +16,11 @@ const createUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(404).json({
+      success: false,
+      message: 'User create Unsuccessfully',
+      error: err.message,
+    });
   }
 };
 
@@ -45,7 +49,11 @@ const getUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(400).json({
+      success: false,
+      message: 'User get Unsuccessfully',
+      error: err.message,
+    });
   }
 };
 
@@ -53,14 +61,24 @@ const deleteUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const result = await UserServices.deleteUserFromDB(userId);
-
     res.status(200).json({
       success: true,
       message: 'Delete user successfully',
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(404).json({
+      success: true,
+      message: 'Delete user Unsuccessfully',
+      error: {
+        success: false,
+        message: err.message,
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      },
+    });
   }
 };
 
