@@ -57,6 +57,30 @@ const getUser = async (req: Request, res: Response) => {
   }
 };
 
+//User info update
+// const userInfoUpdate = ()
+
+const userInfoUpdate = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const userData = req.body;
+    const result = await UserServices.userInfoUpdateInDb(userId, userData);
+
+    res.status(200).json({
+      success: true,
+      message: 'User info update successfully',
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    res.status(400).json({
+      success: false,
+      message: 'User info update Unsuccessfully',
+      error: err.message,
+    });
+  }
+};
+// User delete
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -87,4 +111,5 @@ export const UserControllers = {
   getAllUsers,
   getUser,
   deleteUser,
+  userInfoUpdate,
 };
