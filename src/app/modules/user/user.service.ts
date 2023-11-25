@@ -11,14 +11,20 @@ const createUserIntoDB = async (userData: TUser) => {
 };
 
 const geAllUserFromDB = async () => {
-  const result = await User.find();
+  const result = await User.aggregate([
+    { $match: {} },
+    { $project: { password: 0 } },
+  ]);
   return result;
 };
 
 const getUserFromDB = async (id: string) => {
   const userId = Number(id);
   if (await User.isUserExists(userId)) {
-    const result = await User.findOne({ userId: userId });
+    const result = await User.aggregate([
+      { $match: { userId: userId } },
+      { $project: { password: 0 } },
+    ]);
     return result;
   }
   throw new Error('User not available');

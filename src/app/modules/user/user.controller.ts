@@ -58,8 +58,6 @@ const getUser = async (req: Request, res: Response) => {
 };
 
 //User info update
-// const userInfoUpdate = ()
-
 const userInfoUpdate = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
