@@ -51,10 +51,40 @@ const deleteUserFromDB = async (id: string) => {
   throw new Error('User not Found');
 };
 
+//Get specific user all orders
+const getSingleUserOrdersFromDb = async (id: string) => {
+  const userId = Number(id);
+  if (await User.isUserExists(userId)) {
+    const result = await User.aggregate([
+      { $match: { userId: userId } },
+      { $project: { orders: 1 } },
+    ]);
+    return result;
+  }
+  throw new Error('User not available');
+};
+
+//place Order For Specific User In Database
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const placeOrderForSpecificUserInDb = async (id: string, orderData: any) => {
+  const userId = Number(id);
+  if (await User.isUserExists(userId)) {
+    const result = await User.updateOne(
+      { userId: userId },
+      { $set: { orders: orderData } },
+    );
+
+    return result;
+  }
+  throw new Error('User not available');
+};
+
 export const UserServices = {
   createUserIntoDB,
   geAllUserFromDB,
   getUserFromDB,
   userInfoUpdateInDb,
   deleteUserFromDB,
+  getSingleUserOrdersFromDb,
+  placeOrderForSpecificUserInDb,
 };

@@ -18,8 +18,8 @@ const createUser = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(404).json({
       success: false,
-      message: 'User create Unsuccessfully',
-      error: err.message,
+      message: err.message,
+      error: err,
     });
   }
 };
@@ -104,10 +104,56 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+// get
+const getSingleUserOrders = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.getSingleUserOrdersFromDb(userId);
+    res.status(200).json({
+      success: true,
+      message: 'Specific User Orders get successfully',
+      data: result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: 'Specific User order get Unsuccessfully',
+      error: err.message,
+    });
+  }
+};
+
+//place Order For Specific User
+const placeOrderForSpecificUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const userData = req.body;
+    const result = await UserServices.placeOrderForSpecificUserInDb(
+      userId,
+      userData,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Order place successfully',
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    res.status(400).json({
+      success: false,
+      message: 'Place order Unsuccessfully',
+      error: err.message,
+    });
+  }
+};
+
 export const UserControllers = {
   createUser,
   getAllUsers,
   getUser,
   deleteUser,
   userInfoUpdate,
+  getSingleUserOrders,
+  placeOrderForSpecificUser,
 };
