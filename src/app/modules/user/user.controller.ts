@@ -18,8 +18,8 @@ const createUser = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(404).json({
       success: false,
-      message: err.message,
-      error: err,
+      message: (err as Error).message,
+      error: err as Error,
     });
   }
 };
@@ -34,7 +34,7 @@ const getAllUsers = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    console.log(err as Error);
   }
 };
 
@@ -52,7 +52,7 @@ const getUser = async (req: Request, res: Response) => {
     res.status(400).json({
       success: false,
       message: 'User get Unsuccessfully',
-      error: err.message,
+      error: (err as Error).message,
     });
   }
 };
@@ -74,7 +74,7 @@ const userInfoUpdate = async (req: Request, res: Response) => {
     res.status(400).json({
       success: false,
       message: 'User info update Unsuccessfully',
-      error: err.message,
+      error: (err as Error).message,
     });
   }
 };
@@ -94,7 +94,7 @@ const deleteUser = async (req: Request, res: Response) => {
       message: 'Delete user Unsuccessfully',
       error: {
         success: false,
-        message: err.message,
+        message: (err as Error).message,
         error: {
           code: 404,
           description: 'User not found!',
@@ -118,7 +118,7 @@ const getSingleUserOrders = async (req: Request, res: Response) => {
     res.status(400).json({
       success: false,
       message: 'Specific User order get Unsuccessfully',
-      error: err.message,
+      error: (err as Error).message,
     });
   }
 };
@@ -139,11 +139,11 @@ const placeOrderForSpecificUser = async (req: Request, res: Response) => {
       data: result,
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err: any) {
+  } catch (err) {
     res.status(400).json({
       success: false,
       message: 'Place order Unsuccessfully',
-      error: err.message,
+      error: (err as Error).message,
     });
   }
 };
